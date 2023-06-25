@@ -1,0 +1,15 @@
+.currency-rate {
+    max-width: 200px;
+}
+
+.currency-rate-header {
+    margin-bottom: 10px;
+}
+
+.currency-rate-list {
+    text-align: start;
+}
+
+.currency-rate-list-item {
+    margin-bottom: 3px;
+}
