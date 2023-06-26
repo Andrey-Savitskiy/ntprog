@@ -1,0 +1,13 @@
+.TickerCost-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+}
+
+.TickerCost-paragraph {
+    max-width: 100px;
+    margin-bottom: 10px;
+    font-weight: 700;
+    font-size: 20px;
+    word-break: break-all;
+}
