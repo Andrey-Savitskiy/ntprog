@@ -8,9 +8,15 @@ const Select = (props) => {
     ])
 
     return (
-        <select className={props.className.select}>
+        <select
+            className={props.className.select}
+            onChange={event => props.onChange(event.target.value)}
+        >
             {option.map(item => (
-                <option className={props.className.option} value={item.name} key={item.id}>
+                <option
+                    className={props.className.option}
+                    value={item.name}
+                    key={item.id}>
                     {item.name}
                 </option>
             ))}

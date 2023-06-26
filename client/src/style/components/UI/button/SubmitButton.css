@@ -8,3 +8,11 @@
     font-weight: 500;
     transition: all 0.2s;
 }
+
+.SubmitButton:hover {
+    cursor: pointer;
+}
+
+.SubmitButton:active {
+    cursor: auto;
+}
