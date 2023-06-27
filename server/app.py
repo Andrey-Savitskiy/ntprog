@@ -1,6 +1,7 @@
 import asyncio
 import uvicorn
 from fastapi import FastAPI, WebSocket
+from starlette.websockets import WebSocketDisconnect
 from server.utils.get_quotes import get_quotes
 from settings import logger
 from api.parser_api import parser_api
@@ -11,9 +12,16 @@ app = FastAPI()
 @logger.catch()
 @app.websocket("/ws/")
 async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    while True:
-        await parser_api(await websocket.receive_json())
+    try:
+        await websocket.accept()
+        while True:
+            try:
+                message = await websocket.receive_json()
+                await parser_api(message=message, websocket=websocket)
+            except WebSocketDisconnect:
+                continue
+    except RuntimeError:
+        pass
 
 
 async def start_server():

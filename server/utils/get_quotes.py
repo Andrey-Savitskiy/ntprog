@@ -1,12 +1,7 @@
 import asyncio
 import random
-from server.settings import logger, CURRENCY
-
-quotes = {
-    'EUR/USD': {'buy': 1, 'sell': 1},
-    'EUR/RUB': {'buy': 92.5, 'sell': 92.3},
-    'USD/RUB': {'buy': 84.7, 'sell': 84.66},
-}
+from server.handlers.messages import send_market_data_update_message
+from server.settings import logger, CURRENCY, quotes
 
 
 @logger.catch()
@@ -14,6 +9,8 @@ async def get_quotes():
     while True:
         print(quotes)
         await asyncio.sleep(random.randrange(10, 15))
-        for currency in CURRENCY:
+        for currency in CURRENCY.keys():
             for key, value in quotes[currency].items():
                 quotes[currency][key] = round(abs(value + random.uniform(-1, 1)), 3)
+
+        await send_market_data_update_message()

@@ -2,10 +2,8 @@ import json
 
 
 class MessageType:
-    SUBSCRIBE_MARKET_DATA = 1
-    UNSUBSCRIBE_MARKET_DATA = 2
-    PLACE_ORDER = 3
-    CANCEL_ORDER = 4
+    SUBSCRIBE_MARKET_DATA, UNSUBSCRIBE_MARKET_DATA, PLACE_ORDER, CANCEL_ORDER, SUCCESS_INFO,\
+        ERROR_INFO, EXECUTION_REPORT, UPDATE_MARKET_DATA = range(1, 9)
 
 
 class Message:
@@ -45,21 +43,21 @@ def cancel_order(order_id):
 
 
 class SuccessInfo:
-    def __init__(self, subscription_id=None):
+    def __init__(self, subscription_id: int):
         self.subscription_id = subscription_id
 
     def to_json(self):
-        message = {"subscriptionId": self.subscription_id} if self.subscription_id else None
-        return Message(message_type=0, message=message).to_json()
+        message = {"subscriptionId": self.subscription_id}
+        return Message(message_type=MessageType.SUCCESS_INFO, message=message).to_json()
 
 
 class ErrorInfo:
-    def __init__(self, reason):
+    def __init__(self, reason: str):
         self.reason = reason
 
     def to_json(self):
         message = {"reason": self.reason}
-        return Message(message_type=0, message=message).to_json()
+        return Message(message_type=MessageType.ERROR_INFO, message=message).to_json()
 
 
 class ExecutionReport:
@@ -78,23 +76,19 @@ class ExecutionReport:
             "price": self.price,
             "executionTime": self.execution_time
         }
-        return Message(message_type=0, message=message).to_json()
+        return Message(message_type=MessageType.EXECUTION_REPORT, message=message).to_json()
 
 
 class MarketDataUpdate:
-    def __init__(self, instrument, bid_price, bid_quantity, ask_price, ask_quantity):
-        self.instrument = instrument
+    def __init__(self, instrument_id: int, bid_price: float, ask_price: float):
+        self.instrument_id = instrument_id
         self.bid_price = bid_price
-        self.bid_quantity = bid_quantity
         self.ask_price = ask_price
-        self.ask_quantity = ask_quantity
 
-    def to_json(self):
+    def to_json(self) -> json:
         message = {
-            "instrument": self.instrument,
+            "instrument_id": self.instrument_id,
             "bidPrice": self.bid_price,
-            "bidQuantity": self.bid_quantity,
             "askPrice": self.ask_price,
-            "askQuantity": self.ask_quantity
         }
-        return Message(message_type=0, message=message).to_json()
+        return Message(message_type=MessageType.UPDATE_MARKET_DATA, message=message).to_json()
