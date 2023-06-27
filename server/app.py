@@ -1,9 +1,10 @@
 from fastapi import FastAPI, WebSocket
-
+from settings import logger
 
 app = FastAPI()
 
 
+@logger.catch()
 @app.websocket("/ws/")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
@@ -12,6 +13,7 @@ async def websocket_endpoint(websocket: WebSocket):
             message = await websocket.receive_json()
             print(message)
         except Exception as error:
+            logger.error(str(error), error.__traceback__)
             continue
 
 

@@ -154,3 +154,4 @@ dmypy.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+/server/logs/
