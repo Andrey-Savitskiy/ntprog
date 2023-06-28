@@ -7,7 +7,7 @@ import Ticker from "./components/Ticker";
 function App() {
     return (
         <div className='App'>
-            <CurrencyRate/>
+            {/*<CurrencyRate/>*/}
             <Ticker/>
         </div>
     );
