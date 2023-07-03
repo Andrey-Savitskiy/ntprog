@@ -4,30 +4,34 @@ import Select from "./UI/input/Select";
 import Input from "./UI/input/Input";
 import TickerCost from "./TickerCost";
 
-const Ticker = () => {
+
+const Ticker = (props) => {
     const [sell, setSell] = useState('0')
     const [buy, setBuy] = useState('0')
 
-    const changeTicker = () => {
-        const currencyPare = document.getElementsByTagName('select')[0].value;
-
-        const currencyCostSell = parseFloat(document.getElementById(currencyPare + '-sell').children[0].textContent);
-        const currencyCostBuy = parseFloat(document.getElementById(currencyPare + '-buy').children[0].textContent);
-
+    function changeTicker() {
         const input = document.getElementsByTagName('input')[0].value;
         const inputNumber = input ? parseFloat(input) : 1;
 
-        setSell((currencyCostSell * inputNumber).toFixed(2));
-        setBuy((currencyCostBuy * inputNumber).toFixed(2))
+        const select = document.getElementsByTagName('select')[0].value;
+
+        const price = JSON.parse(window.localStorage.getItem(select))
+        console.log(price)
+
+        setSell((price['bid_price'] * inputNumber).toFixed(2));
+        setBuy((price['ask_price'] * inputNumber).toFixed(2))
     }
 
-    useEffect(changeTicker)
+    useEffect(() => {
+        changeTicker()
+    }, [])
 
     return (
         <form className={'ticker-form'}>
             <Select
                 className={{select: 'ticker-form-select', option: 'ticker-form-option'}}
                 onChange={changeTicker}
+                socket={props.socket}
             />
 
             <Input
@@ -51,3 +55,5 @@ const Ticker = () => {
 };
 
 export default Ticker;
+export let setSellContext;
+export let setBuyContext;
