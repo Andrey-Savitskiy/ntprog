@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import SubscribeMarketData from "../../../api/api";
 
 
 const Select = (props) => {
@@ -9,15 +8,10 @@ const Select = (props) => {
         {id: 'USD/RUB'},
     ])
 
-    function onChange(value) {
-        props.socket.send(SubscribeMarketData(value))
-        props.onChange(value)
-    }
-
     return (
         <select
             className={props.className.select}
-            onChange={event => onChange(event.target.value)}
+            onChange={event => props.onChange(event.target.value)}
         >
             {option.map(item => (
                 <option

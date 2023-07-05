@@ -1,8 +1,13 @@
-function SubscribeMarketData(instrument_id) {
+export function SubscribeMarketData(instrument_id) {
     return JSON.stringify({
         "messageType": 1,
         "message": {"instrument": instrument_id}
     })
 }
 
-export default SubscribeMarketData;
+export function UnsubscribeMarketData(instrument_id) {
+    return JSON.stringify({
+        "messageType": 2,
+        "message": {"instrument": instrument_id}
+    })
+}

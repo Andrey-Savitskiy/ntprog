@@ -4,13 +4,14 @@ import './style/App.css';
 import Ticker from "./components/Ticker";
 import { useState} from "react";
 import BarLoader from "react-spinners/BarLoader";
-import parserApi from "./api/parser_api";
-import SubscribeMarketData from "./api/api";
+import {SubscribeMarketData, UnsubscribeMarketData} from "./api/api";
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
 
 function App() {
     const ws = useRef(null);
+    const [message, setMessage] = useState(null);
+    const [instrument, setInstrument] = useState('EUR/USD');
     const [isConnection, setIsConnection] = useState(false);
 
     const override = {
@@ -27,7 +28,7 @@ function App() {
                 setIsConnection(true)
 
                 setTimeout(() => {
-                    ws.current.send(SubscribeMarketData('EUR/USD'))
+                    ws.current.send(SubscribeMarketData(instrument))
                 }, 1000)
             };
             ws.current.onclose = () => {
@@ -45,11 +46,18 @@ function App() {
         ws.current.onmessage = event => {
             if (isConnection) return;
 
-            const message = JSON.parse(event.data);
+            const message = JSON.parse(event.data)
+            setMessage(message);
             console.log(message)
-            parserApi(message);
         };
     }, [isConnection]);
+
+    function onSelectChange(value) {
+        setMessage(null)
+        ws.current.send(UnsubscribeMarketData(instrument))
+        ws.current.send(SubscribeMarketData(value))
+        setInstrument(value)
+    }
 
     return (
         <div className='App'>
@@ -63,7 +71,11 @@ function App() {
                     speedMultiplier={0.8}
                 />
             :
-                <Ticker socket={ws.current}/>
+                <Ticker
+                    socket={ws.current}
+                    message={message}
+                    onSelectChange={onSelectChange}
+                />
             }
         </div>
     );
