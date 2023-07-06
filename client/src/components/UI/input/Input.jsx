@@ -12,6 +12,7 @@ const Input = (props) => {
                type='number'
                min={1}
                defaultValue={1}
+               name={'amount'}
                onChange={event => change(event)}
         />
     );

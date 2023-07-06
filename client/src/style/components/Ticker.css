@@ -1,8 +1,10 @@
 .ticker-form {
     max-width: 300px;
+    min-height: 310px;
     margin: 0 auto;
+    margin-bottom: 50px;
     padding: 30px;
-    border: 2px solid black;
+    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
     border-radius: 20px;
 }
 
@@ -43,20 +45,20 @@
 }
 
 .buy {
-    color: green !important;
-    border-color: green !important;
+    color: limegreen !important;
+    border-color: limegreen !important;
 }
 
 .buy:hover {
-    color: darkgreen !important;
-    background: repeating-linear-gradient(-60deg, rgba(0, 100, 0, 0.6), transparent 1px, transparent 8px);
+    color: green !important;
+    background: repeating-linear-gradient(-60deg, rgba(0, 128, 0, 1), transparent 1px, transparent 8px);
 }
 
 .buy:active {
     color: white !important;
     background: none;
-    border-color: darkgreen !important;
-    background-color: darkgreen !important;
+    border-color: green !important;
+    background-color: green !important;
 }
 
 .sell {

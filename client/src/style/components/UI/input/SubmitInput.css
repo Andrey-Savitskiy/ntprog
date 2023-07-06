@@ -1,4 +1,4 @@
-.SubmitButton {
+.SubmitInput {
     padding: 15px 25px;
     margin-bottom: 10px;
     border: 2px dashed black;
@@ -9,10 +9,10 @@
     transition: all 0.2s;
 }
 
-.SubmitButton:hover {
+.SubmitInput:hover {
     cursor: pointer;
 }
 
-.SubmitButton:active {
+.SubmitInput:active {
     cursor: auto;
 }

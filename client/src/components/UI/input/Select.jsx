@@ -12,10 +12,12 @@ const Select = (props) => {
         <select
             className={props.className.select}
             onChange={event => props.onChange(event.target.value)}
+            name={'instrument'}
         >
             {option.map(item => (
                 <option
                     className={props.className.option}
+                    name={item.id}
                     value={item.id}
                     key={item.id}>
                     {item.id}

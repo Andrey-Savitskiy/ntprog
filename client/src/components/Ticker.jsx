@@ -4,7 +4,7 @@ import Select from "./UI/input/Select";
 import Input from "./UI/input/Input";
 import TickerCost from "./TickerCost";
 import {PulseLoader} from "react-spinners";
-import {parsing} from "../api/parsing";
+import {parsing_ticket} from "../api/parsing";
 
 
 const Ticker = (props) => {
@@ -12,8 +12,20 @@ const Ticker = (props) => {
     const [buy, setBuy] = useState('0')
     const [isDataLoaded, setIsDataLoaded] = useState(true)
 
+    const override = {
+        marginTop: '10%'
+    };
+
     function changeTicker() {
-        parsing(props.message, setIsDataLoaded, setSell, setBuy)
+        parsing_ticket(props.message,
+            setIsDataLoaded,
+            setSell,
+            setBuy,
+            props.setBidPrice,
+            props.setAskPrice,
+            props.bidPrice,
+            props.askPrice
+        )
     }
 
     useEffect(() => {
@@ -21,7 +33,7 @@ const Ticker = (props) => {
     }, [props.message])
 
     return (
-        <form className={'ticker-form'}>
+        <form id={'form'} className={'ticker-form'}>
             <Select
                 className={{select: 'ticker-form-select', option: 'ticker-form-option'}}
                 onChange={props.onSelectChange}
@@ -39,11 +51,13 @@ const Ticker = (props) => {
                     <TickerCost
                         content={{cost: sell, buttonText: 'SELL'}}
                         className={'ticker-form-button sell'}
+                        onOrderButtonClick={props.onOrderButtonClick}
                     />
                     <div className={'vertical-line'}></div>
                     <TickerCost
                         content={{cost: buy, buttonText: 'BUY'}}
                         className={'ticker-form-button buy'}
+                        onOrderButtonClick={props.onOrderButtonClick}
                     />
                 </div>
             :
@@ -51,6 +65,7 @@ const Ticker = (props) => {
                     loading={true}
                     margin={20}
                     color={'#000'}
+                    cssOverride={override}
                 />
             }
         </form>

@@ -2,9 +2,10 @@ import React, {useCallback, useEffect, useRef} from "react";
 import './style/normalize.css';
 import './style/App.css';
 import Ticker from "./components/Ticker";
-import { useState} from "react";
+import Table from "./components/Table";
+import {useState} from "react";
 import BarLoader from "react-spinners/BarLoader";
-import {SubscribeMarketData, UnsubscribeMarketData} from "./api/api";
+import {PlaceOrder, SubscribeMarketData, UnsubscribeMarketData} from "./api/api";
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
 
@@ -12,6 +13,8 @@ function App() {
     const ws = useRef(null);
     const [message, setMessage] = useState(null);
     const [instrument, setInstrument] = useState('EUR/USD');
+    const [bidPrice, setBidPrice] = useState(0);
+    const [askPrice, setAskPrice] = useState(0);
     const [isConnection, setIsConnection] = useState(false);
 
     const override = {
@@ -20,11 +23,14 @@ function App() {
     };
 
     useEffect(() => {
+
+    }, [instrument]);
+
+    useEffect(() => {
         if (!isConnection) {
             ws.current = new ReconnectingWebSocket('ws://localhost:8000/ws/');
 
             ws.current.onopen = () => {
-                console.log('Соединение открыто')
                 setIsConnection(true)
 
                 setTimeout(() => {
@@ -32,7 +38,6 @@ function App() {
                 }, 1000)
             };
             ws.current.onclose = () => {
-                console.log('Соединение закрыто')
                 setIsConnection(false)
             };
 
@@ -48,7 +53,6 @@ function App() {
 
             const message = JSON.parse(event.data)
             setMessage(message);
-            console.log(message)
         };
     }, [isConnection]);
 
@@ -57,6 +61,22 @@ function App() {
         ws.current.send(UnsubscribeMarketData(instrument))
         ws.current.send(SubscribeMarketData(value))
         setInstrument(value)
+    }
+
+    function onOrderButtonClick(event) {
+        event.preventDefault()
+
+        const side = event.target.value;
+
+        const price = (side === 'SELL') ? bidPrice : askPrice;
+
+        let formData = {};
+        const data = new FormData(document.getElementById('form'));
+        data.forEach(function(value, key){
+            formData[key] = value;
+        });
+
+        ws.current.send(PlaceOrder(formData['instrument'], side, price, parseInt(formData['amount'])))
     }
 
     return (
@@ -71,11 +91,21 @@ function App() {
                     speedMultiplier={0.8}
                 />
             :
-                <Ticker
-                    socket={ws.current}
-                    message={message}
-                    onSelectChange={onSelectChange}
-                />
+               <>
+                   <Ticker
+                       socket={ws.current}
+                       message={message}
+                       setBidPrice={setBidPrice}
+                       setAskPrice={setAskPrice}
+                       bidPrice={bidPrice}
+                       askPrice={askPrice}
+                       onSelectChange={onSelectChange}
+                       onOrderButtonClick={onOrderButtonClick}
+                   />
+                   <Table
+                       message={message}
+                   />
+               </>
             }
         </div>
     );
