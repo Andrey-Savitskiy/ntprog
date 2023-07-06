@@ -18,30 +18,6 @@ class Message:
         })
 
 
-def subscribe_market_data(instrument):
-    message = {'instrument': instrument}
-    return Message(MessageType.SUBSCRIBE_MARKET_DATA, message).to_json()
-
-
-def unsubscribe_market_data(subscription_id):
-    message = {'subscriptionId': subscription_id}
-    return Message(MessageType.UNSUBSCRIBE_MARKET_DATA, message).to_json()
-
-
-def place_order(instrument, quantity, price):
-    message = {
-        'instrument': instrument,
-        'quantity': quantity,
-        'price': price
-    }
-    return Message(MessageType.PLACE_ORDER, message).to_json()
-
-
-def cancel_order(order_id):
-    message = {'orderId': order_id}
-    return Message(MessageType.CANCEL_ORDER, message).to_json()
-
-
 class SuccessInfo:
     def __init__(self, subscription_id: int):
         self.subscription_id = subscription_id
@@ -61,22 +37,11 @@ class ErrorInfo:
 
 
 class ExecutionReport:
-    def __init__(self, order_id, instrument, quantity, price, execution_time):
-        self.order_id = order_id
-        self.instrument = instrument,
-        self.quantity = quantity
-        self.price = price
-        self.execution_time = execution_time
+    def __init__(self, data: dict):
+        self.data = data
 
     def to_json(self):
-        message = {
-            'orderId': self.order_id,
-            'instrument': self.instrument,
-            'quantity': self.quantity,
-            'price': self.price,
-            'executionTime': self.execution_time
-        }
-        return Message(message_type=MessageType.EXECUTION_REPORT, message=message).to_json()
+        return Message(message_type=MessageType.EXECUTION_REPORT, message=self.data).to_json()
 
 
 class MarketDataUpdate:
