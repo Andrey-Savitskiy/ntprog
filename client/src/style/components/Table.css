@@ -1,0 +1,59 @@
+.table-container {
+    display: grid;
+    width: 100%;
+    padding: 30px;
+    margin-bottom: 10%;
+    border-radius: 20px;
+    justify-content: stretch;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.table-head,
+.table-body {
+    display: grid;
+    word-wrap: break-word;
+    grid-template-columns:
+        minmax(100px, 1fr)
+        minmax(180px, 1fr)
+        minmax(180px, 1fr)
+        minmax(100px, 0.8fr)
+        minmax(50px, 0.5fr)
+        minmax(60px, 0.8fr)
+        minmax(100px, 0.8fr)
+        minmax(100px, 1fr)
+        0.2fr;
+}
+
+.table-head {
+    margin-bottom: 20px;
+}
+
+.table-body {
+    align-items: center;
+    border-radius: 20px;
+    background-color: #fff;
+    font-size: 20px;
+}
+
+.table-head-box {
+    padding: 15px;
+    font-weight: bold;
+}
+
+.table-body-box {
+    position: relative;
+    padding: 15px;
+}
+
+.green {
+    color: limegreen;
+}
+
+.red {
+    color: red;
+}
+
+.table-paragraph {
+    font-size: 20px;
+    margin-bottom: 5px;
+}

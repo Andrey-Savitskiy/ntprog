@@ -1,0 +1,22 @@
+.CancelButton {
+    border: none;
+    border-radius: 50%;
+    background-image: url('../../../../assets/cancel-cross-red.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 120%;
+    background-color: white;
+    transition: 0.2s linear;
+}
+
+.CancelButton:hover {
+    cursor: pointer;
+    background-color: red;
+    rotate: 180deg;
+    background-image: url('../../../../assets/cancel-cross-white.svg');
+}
+
+.CancelButton:active {
+    background-color: #640000;
+    background-image: url('../../../../assets/cancel-cross-white.svg');
+}

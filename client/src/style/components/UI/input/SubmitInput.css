@@ -1,0 +1,18 @@
+.SubmitInput {
+    padding: 15px 25px;
+    margin-bottom: 10px;
+    border: 2px dashed black;
+    border-radius: 15px;
+    background-color: white;
+    font-size: 24px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.SubmitInput:hover {
+    cursor: pointer;
+}
+
+.SubmitInput:active {
+    cursor: auto;
+}
