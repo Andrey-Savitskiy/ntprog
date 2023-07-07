@@ -10,12 +10,25 @@ quotes = {
     'USD/RUB': {'buy': 84.7, 'sell': 84.66},
 }
 
-"""
-subscribers = {
-    websocket: {
-        'instrument': '',
-        'orders_dict': []
-    }
-}
-"""
-subscribers = {}
+
+class Subscribers:
+    def __init__(self):
+        """
+        subscribers = {
+            websocket: {
+                'instrument': '',
+                'orders_dict': {
+                    order_id: {order}
+                }
+            }
+        }
+        """
+        self.subscribers = {}
+
+    def set_subscribers(self, websocket):
+        self.subscribers[websocket] = {}
+
+    def pop_subscribers(self, websocket):
+        self.subscribers.pop(websocket, 10)
+
+subscribers_object = Subscribers()

@@ -3,7 +3,8 @@ import uvicorn
 from fastapi import FastAPI, WebSocket
 from starlette.websockets import WebSocketDisconnect
 from server.utils.get_quotes import get_quotes
-from settings import logger, subscribers
+from server.utils.set_status import set_status
+from settings import logger, subscribers_object
 from api.parser_api import parser_api
 
 app = FastAPI()
@@ -14,13 +15,13 @@ app = FastAPI()
 async def websocket_endpoint(websocket: WebSocket):
     try:
         await websocket.accept()
-        subscribers[websocket] = {}
+        subscribers_object.set_subscribers(websocket)
         while True:
             try:
                 message = await websocket.receive_json()
                 await parser_api(message=message, websocket=websocket)
             except WebSocketDisconnect:
-                subscribers.pop(websocket)
+                subscribers_object.pop_subscribers(websocket)
                 continue
     except RuntimeError:
         pass
@@ -41,6 +42,7 @@ def main():
         tasks = [
             ioloop.create_task(start_server()),
             ioloop.create_task(get_quotes()),
+            ioloop.create_task(set_status()),
         ]
         ioloop.run_until_complete(asyncio.wait(tasks))
     except Exception as error:

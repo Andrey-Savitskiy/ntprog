@@ -3,7 +3,7 @@ from datetime import datetime
 from starlette.websockets import WebSocket
 from server.api.api import *
 from server.handlers.messages import send_message
-from server.settings import subscribers, quotes
+from server.settings import subscribers_object, quotes
 
 
 async def parser_api(message: dict, websocket: WebSocket) -> None:
@@ -12,6 +12,8 @@ async def parser_api(message: dict, websocket: WebSocket) -> None:
         message_type = message['messageType']
         message_body = message['message']
         now_time = datetime.now()
+
+        subscribers = subscribers_object.subscribers
 
         if message_type == MessageType.SUBSCRIBE_MARKET_DATA:
             instrument = message_body['instrument']
@@ -36,7 +38,6 @@ async def parser_api(message: dict, websocket: WebSocket) -> None:
             except KeyError:
                 return
 
-
         elif message_type == MessageType.PLACE_ORDER:
             message_body['ID'] = now_time.timestamp()
             message_body['creation_time'] = now_time.strftime("%Y-%m-%d %H:%M:%S:%f")
@@ -55,7 +56,6 @@ async def parser_api(message: dict, websocket: WebSocket) -> None:
                 orders_dict[order_id]['status'] = 'Cancelled'
 
                 await websocket.send_text(ExecutionReport(orders_dict[order_id]).to_json())
-
 
     except Exception as error:
         await send_message(clients=[websocket], message=ErrorInfo(reason=f'Ошибка сервера: {error}').to_json())
