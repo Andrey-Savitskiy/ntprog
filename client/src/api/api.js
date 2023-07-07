@@ -34,3 +34,12 @@ export function PlaceOrder(instrument_id, side, price, amount) {
         }
     })
 }
+
+export function CancelOrder(order_id) {
+    return JSON.stringify({
+        "messageType": API.CANCEL_ORDER,
+        "message": {
+            "order_id": order_id,
+        }
+    })
+}

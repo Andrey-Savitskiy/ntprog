@@ -45,7 +45,21 @@ export const parsing_table = (message, ordersList, setOrdersList) => {
     if (message) {
         switch (message.messageType) {
             case API.EXECUTION_REPORT:
-                setOrdersList([...ordersList, message.message])
+                const order_id = message.message['ID'];
+                const order = document.getElementById(order_id);
+
+                if (order) {
+                    console.log(message.message)
+                    const status = document.getElementById(`status:${order_id}`);
+                    const change_time = document.getElementById(`change_time:${order_id}`);
+                    change_time.innerText = message.message['change_time']
+                    status.innerText = message.message['status']
+
+                    const cancel_button = document.getElementById(`cancel:${order_id}`);
+                    cancel_button.style.display = 'none';
+                } else {
+                    setOrdersList([message.message, ...ordersList])
+                }
                 break
         }
     }

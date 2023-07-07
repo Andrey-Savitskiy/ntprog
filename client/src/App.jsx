@@ -5,7 +5,7 @@ import Ticker from "./components/Ticker";
 import Table from "./components/Table";
 import {useState} from "react";
 import BarLoader from "react-spinners/BarLoader";
-import {PlaceOrder, SubscribeMarketData, UnsubscribeMarketData} from "./api/api";
+import {CancelOrder, PlaceOrder, SubscribeMarketData, UnsubscribeMarketData} from "./api/api";
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
 
@@ -79,6 +79,12 @@ function App() {
         ws.current.send(PlaceOrder(formData['instrument'], side, price, parseInt(formData['amount'])))
     }
 
+    function onCancelButtonClick(event) {
+        event.preventDefault()
+
+        ws.current.send(CancelOrder(event.target.id.split(':')[1]))
+    }
+
     return (
         <div className='App'>
             {!isConnection ?
@@ -104,6 +110,7 @@ function App() {
                    />
                    <Table
                        message={message}
+                       onCancelButtonClick={onCancelButtonClick}
                    />
                </>
             }

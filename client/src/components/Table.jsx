@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import '../style/components/Table.css'
 import TableHead from "./TableHead";
 import TableRow from "./TableRow";
@@ -11,6 +11,10 @@ const Table = (props) => {
         parsing_table(props.message, ordersList, setOrdersList)
     }
 
+    const memoizedList = useMemo(() => {
+        return ordersList.sort((a, b) => new Date(a['creation_time']) - new Date(b['creation_time']));
+    }, [ordersList]);
+
     useEffect(() => {
         changeTable()
     }, [props.message])
@@ -18,8 +22,15 @@ const Table = (props) => {
     return (
         <div className="table-container">
             <TableHead/>
-            {ordersList.length ?
-                ordersList.reverse().map((order) => <TableRow key={order['ID']} order={order}/>)
+            {memoizedList.length ?
+                memoizedList.map((order, index) =>
+                    <TableRow
+                        key={order['ID']}
+                        order={order}
+                        index={memoizedList.length - index}
+                        onCancelButtonClick={props.onCancelButtonClick}
+                    />
+                )
             :
                 <p className={'table-paragraph'}>Список заявок пуст</p>
             }
