@@ -19,7 +19,7 @@ class Message:
 
 
 class SuccessInfo:
-    def __init__(self, subscription_id: int):
+    def __init__(self, subscription_id: str):
         self.subscription_id = subscription_id
 
     def to_json(self):
@@ -45,7 +45,7 @@ class ExecutionReport:
 
 
 class MarketDataUpdate:
-    def __init__(self, instrument_id: int, bid_price: float, ask_price: float):
+    def __init__(self, instrument_id: str, bid_price: float, ask_price: float):
         self.instrument_id = instrument_id
         self.bid_price = bid_price
         self.ask_price = ask_price

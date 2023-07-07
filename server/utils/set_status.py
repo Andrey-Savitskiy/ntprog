@@ -6,6 +6,7 @@ from server.settings import logger, subscribers_object
 
 NEW_STATUS = ['Filled', 'Rejected']
 
+
 # Есть баг в работе функции не получается получить актуальное значение subscribers,
 # но в реальном проекте это будет бд и проблемы такой не будет, посчитал этот баг не критичным.
 @logger.catch()

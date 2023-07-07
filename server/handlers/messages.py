@@ -3,6 +3,7 @@ from server.settings import quotes, subscribers_object
 
 subscribers = subscribers_object.subscribers
 
+
 async def send_message(clients: list, message: dict):
     for client in clients:
         try:
