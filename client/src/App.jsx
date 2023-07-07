@@ -5,8 +5,11 @@ import Ticker from "./components/Ticker";
 import Table from "./components/Table";
 import {useState} from "react";
 import BarLoader from "react-spinners/BarLoader";
-import {CancelOrder, PlaceOrder, SubscribeMarketData, UnsubscribeMarketData} from "./api/api";
-import ReconnectingWebSocket from 'reconnecting-websocket';
+import WebsocketConnection from "./utils/websocket_connection";
+import GettingData from "./utils/getting_data";
+import OnSelectChangeEvent from "./utils/on_select_change_event";
+import OnOrderButtonClickEvent from "./utils/on_order_button_click_event";
+import {CancelOrder} from "./api/api";
 
 
 function App() {
@@ -22,66 +25,24 @@ function App() {
         margin: '50% auto 0',
     };
 
-    useEffect(() => {
-
-    }, [instrument]);
-
-    useEffect(() => {
-        if (!isConnection) {
-            ws.current = new ReconnectingWebSocket('ws://localhost:8000/ws/');
-
-            ws.current.onopen = () => {
-                setIsConnection(true)
-
-                setTimeout(() => {
-                    ws.current.send(SubscribeMarketData(instrument))
-                }, 1000)
-            };
-            ws.current.onclose = () => {
-                setIsConnection(false)
-            };
-
-            gettingData();
-        }
-    }, [ws]);
-
     const gettingData = useCallback(() => {
-        if (!ws.current) return;
-
-        ws.current.onmessage = event => {
-            if (isConnection) return;
-
-            const message = JSON.parse(event.data)
-            setMessage(message);
-        };
+        GettingData(ws, isConnection, setMessage)
     }, [isConnection]);
 
+    useEffect(() => {
+        WebsocketConnection(ws, isConnection, setIsConnection, instrument, setMessage, gettingData);
+    }, [ws]);
+
     function onSelectChange(value) {
-        setMessage(null)
-        ws.current.send(UnsubscribeMarketData(instrument))
-        ws.current.send(SubscribeMarketData(value))
-        setInstrument(value)
+        OnSelectChangeEvent(value, ws, setMessage, setInstrument, instrument)
     }
 
     function onOrderButtonClick(event) {
-        event.preventDefault()
-
-        const side = event.target.value;
-
-        const price = (side === 'SELL') ? bidPrice : askPrice;
-
-        let formData = {};
-        const data = new FormData(document.getElementById('form'));
-        data.forEach(function(value, key){
-            formData[key] = value;
-        });
-
-        ws.current.send(PlaceOrder(formData['instrument'], side, price, parseInt(formData['amount'])))
+        OnOrderButtonClickEvent(event, ws, bidPrice, askPrice)
     }
 
     function onCancelButtonClick(event) {
         event.preventDefault()
-
         ws.current.send(CancelOrder(event.target.id.split(':')[1]))
     }
 

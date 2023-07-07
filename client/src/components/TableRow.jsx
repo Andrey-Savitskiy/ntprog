@@ -1,4 +1,3 @@
-import React, {useEffect, useState} from 'react';
 import CancelButton from "./UI/button/CancelButton";
 
 const TableRow = (props) => {
