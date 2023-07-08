@@ -19,14 +19,16 @@ async def on_subscribe_market_data(websocket: WebSocket, message_body: dict) -> 
 
     subscribers[websocket]['instrument'] = instrument
 
-    ask_price: float = quotes[instrument]['sell']
-    bid_price: float = quotes[instrument]['buy']
+    try:
+        ask_price: float = quotes[instrument]['sell']
+        bid_price: float = quotes[instrument]['buy']
+    except KeyError:
+        raise KeyError(f"Инструмент {instrument} не поддерживается сервером")
 
     await send_message(clients=[websocket], message=SuccessInfo(subscription_id=instrument).to_json())
     await websocket.send_json(MarketDataUpdate(instrument_id=instrument,
                                                ask_price=ask_price,
                                                bid_price=bid_price).to_json())
-    return 0
 
 
 async def on_unsubscribe_market_data(websocket: WebSocket) -> int:
@@ -44,7 +46,7 @@ async def on_place_order(websocket: WebSocket, message_body: dict, now_time: dat
     message_body['status'] = 'Active'
 
     subscribers[websocket]['orders_dict'][message_body['ID']] = message_body
-    await websocket.send_text(ExecutionReport(message_body).to_json())
+    await websocket.send_json(ExecutionReport(message_body).to_json())
 
     return 0
 
@@ -57,7 +59,7 @@ async def on_cancel_order(websocket: WebSocket, message_body: dict, now_time: da
         orders_dict[order_id]['change_time'] = now_time.strftime("%Y-%m-%d %H:%M:%S:%f")
         orders_dict[order_id]['status'] = 'Cancelled'
 
-        await websocket.send_text(ExecutionReport(orders_dict[order_id]).to_json())
+        await websocket.send_json(ExecutionReport(orders_dict[order_id]).to_json())
 
     return 0
 
