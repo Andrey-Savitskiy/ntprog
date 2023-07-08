@@ -1,6 +1,4 @@
-from datetime import datetime
 from server.handlers.events import *
-from server.handlers.messages import send_message
 
 
 async def parser_api(message: dict, websocket: WebSocket) -> None:
@@ -25,5 +23,5 @@ async def parser_api(message: dict, websocket: WebSocket) -> None:
         else:
             await on_unknown_event(websocket)
 
-    except Exception as error:
-        await send_message(clients=[websocket], message=ErrorInfo(reason=f'Ошибка сервера: {error}').to_json())
+    except (KeyError, ValueError) as error:
+        await websocket.send_json(ErrorInfo(reason=f'Ошибка в формате сообщения: {error}').to_json())

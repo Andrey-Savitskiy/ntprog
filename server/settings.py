@@ -31,4 +31,5 @@ class Subscribers:
     def pop_subscribers(self, websocket):
         self.subscribers.pop(websocket, 10)
 
+
 subscribers_object = Subscribers()
