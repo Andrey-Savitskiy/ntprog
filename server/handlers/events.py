@@ -10,6 +10,8 @@ subscribers = subscribers_object.subscribers
 
 async def on_subscribe_market_data(websocket: WebSocket, message_body: dict) -> int:
     instrument: str = message_body['instrument']
+    if type(instrument) != str:
+        raise ValueError("Неверный тип: 'instrument' должно быть строкой.")
 
     if websocket not in subscribers.keys():
         subscribers[websocket] = {}
@@ -21,7 +23,7 @@ async def on_subscribe_market_data(websocket: WebSocket, message_body: dict) -> 
     bid_price: float = quotes[instrument]['buy']
 
     await send_message(clients=[websocket], message=SuccessInfo(subscription_id=instrument).to_json())
-    await websocket.send_text(MarketDataUpdate(instrument_id=instrument,
+    await websocket.send_json(MarketDataUpdate(instrument_id=instrument,
                                                ask_price=ask_price,
                                                bid_price=bid_price).to_json())
     return 0

@@ -1,4 +1,6 @@
 import asyncio
+from json import JSONDecodeError
+
 import uvicorn
 from fastapi import FastAPI, WebSocket
 from starlette.websockets import WebSocketDisconnect
@@ -20,9 +22,12 @@ async def websocket_endpoint(websocket: WebSocket):
             try:
                 message = await websocket.receive_json()
                 await parser_api(message=message, websocket=websocket)
-            except WebSocketDisconnect:
+            except (WebSocketDisconnect, JSONDecodeError):
                 subscribers_object.pop_subscribers(websocket)
                 continue
+            finally:
+                await websocket.close()
+
     except RuntimeError:
         pass
 
