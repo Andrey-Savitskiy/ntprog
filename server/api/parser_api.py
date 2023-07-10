@@ -24,4 +24,4 @@ async def parser_api(message: dict, websocket: WebSocket) -> None:
             await on_unknown_event(websocket)
 
     except (KeyError, ValueError) as error:
-        await websocket.send_json(ErrorInfo(reason=f'Ошибка в формате сообщения: {error}').to_json())
+        await websocket.send_text(ErrorInfo(reason=f'Ошибка в формате сообщения: {error}').to_json())

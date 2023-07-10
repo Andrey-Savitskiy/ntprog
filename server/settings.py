@@ -1,5 +1,5 @@
 from loguru import logger
-
+from starlette.websockets import WebSocket
 
 logger.add('logs/debug.log', level="WARNING", rotation="50 MB", compression='zip',
            enqueue=True, backtrace=True, diagnose=True)
@@ -25,10 +25,10 @@ class Subscribers:
         """
         self.subscribers = {}
 
-    def set_subscribers(self, websocket):
+    def set_subscribers(self, websocket: WebSocket):
         self.subscribers[websocket] = {}
 
-    def pop_subscribers(self, websocket):
+    def pop_subscribers(self, websocket: WebSocket):
         self.subscribers.pop(websocket, 10)
 
 

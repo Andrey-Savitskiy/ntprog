@@ -24,9 +24,8 @@ async def websocket_endpoint(websocket: WebSocket):
                 await parser_api(message=message, websocket=websocket)
             except (WebSocketDisconnect, JSONDecodeError):
                 subscribers_object.pop_subscribers(websocket)
-                continue
-            finally:
                 await websocket.close()
+                continue
 
     except RuntimeError:
         pass
