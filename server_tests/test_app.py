@@ -1,5 +1,3 @@
-import json
-
 from fastapi.testclient import TestClient
 from starlette.websockets import WebSocketDisconnect
 
@@ -13,7 +11,7 @@ def test_websocket_on_receive_json():
     with client.websocket_connect('/ws/') as websocket:
         message = {'msg': 'Hello WebSocket'}
         websocket.send_json(message)
-        data = json.loads(websocket.receive_json())
+        data = websocket.receive_json()
         assert data == {'messageType': MessageType.ERROR_INFO, 'message': {'reason': "Ошибка в формате сообщения: 'messageType'"}}
 
 

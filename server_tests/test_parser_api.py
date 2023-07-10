@@ -1,4 +1,3 @@
-import json
 from starlette.testclient import TestClient
 
 from server.app import app
@@ -10,7 +9,7 @@ def test_websocket_on_receive_without_message():
     with client.websocket_connect('/ws/') as websocket:
         message = {'messageType': 1}
         websocket.send_json(message)
-        data = json.loads(websocket.receive_json())
+        data = websocket.receive_json()
         assert data == {'messageType': MessageType.ERROR_INFO, 'message': {'reason': "Ошибка в формате сообщения: 'message'"}}
 
 
@@ -19,5 +18,5 @@ def test_websocket_on_receive_without_message_type():
     with client.websocket_connect('/ws/') as websocket:
         message = {'message': ''}
         websocket.send_json(message)
-        data = json.loads(websocket.receive_json())
+        data = websocket.receive_json()
         assert data == {'messageType': MessageType.ERROR_INFO, 'message': {'reason': "Ошибка в формате сообщения: 'messageType'"}}

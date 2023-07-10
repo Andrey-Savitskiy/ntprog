@@ -7,7 +7,7 @@ subscribers = subscribers_object.subscribers
 async def send_message(clients: list, message: dict):
     for client in clients:
         try:
-            await client.send_json(message)
+            await client.send_text(message)
         except RuntimeError:
             continue
 

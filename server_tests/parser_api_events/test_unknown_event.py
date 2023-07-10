@@ -1,4 +1,3 @@
-import json
 from starlette.testclient import TestClient
 
 from server.app import app
@@ -10,6 +9,6 @@ def test_unknown_order_event():
     with client.websocket_connect('/ws/') as websocket:
         message = {'messageType': -1, 'message': {}}
         websocket.send_json(message)
-        data = json.loads(websocket.receive_json())
+        data = websocket.receive_json()
         assert data == {'messageType': MessageType.ERROR_INFO,
                         'message': {'reason': "Сообщение неизвестного типа"}}

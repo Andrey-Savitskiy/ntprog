@@ -1,4 +1,3 @@
-import json
 from starlette.testclient import TestClient
 
 from server.app import app
@@ -10,7 +9,7 @@ def test_place_order_event_without_message():
     with client.websocket_connect('/ws/') as websocket:
         message = {'messageType': MessageType.PLACE_ORDER, 'message': {}}
         websocket.send_json(message)
-        data = json.loads(websocket.receive_json())
+        data = websocket.receive_json()
         assert data == {'messageType': MessageType.ERROR_INFO,
                         'message': {'reason': "Ошибка в формате сообщения: 'Передано неверное количество параметров в message'"}}
 
@@ -20,7 +19,7 @@ def test_place_order_event_with_incorrect_field():
     with client.websocket_connect('/ws/') as websocket:
         message = {'messageType': MessageType.PLACE_ORDER, 'message': {'instrument': 'EUR/USD', 'si55de': 'BUY', 'price': 10, 'amount': 1}}
         websocket.send_json(message)
-        data = json.loads(websocket.receive_json())
+        data = websocket.receive_json()
         assert data == {'messageType': MessageType.ERROR_INFO,
                         'message': {'reason': "Ошибка в формате сообщения: 'Передан неизвестный ключ: si55de'"}}
 
@@ -30,7 +29,7 @@ def test_place_order_event_incorrect_instrument():
     with client.websocket_connect('/ws/') as websocket:
         message = {'messageType': MessageType.PLACE_ORDER, 'message': {'instrument': '1', 'side': 'BUY', 'price': 10, 'amount': 1}}
         websocket.send_json(message)
-        data = json.loads(websocket.receive_json())
+        data = websocket.receive_json()
         assert data == {'messageType': MessageType.ERROR_INFO,
                         'message': {'reason': "Ошибка в формате сообщения: 'Инструмент 1 не поддерживается сервером'"}}
 
@@ -40,7 +39,7 @@ def test_place_order_event_incorrect_side():
     with client.websocket_connect('/ws/') as websocket:
         message = {'messageType': MessageType.PLACE_ORDER, 'message': {'instrument': 'EUR/USD', 'side': 'UPDATE', 'price': 10, 'amount': 1}}
         websocket.send_json(message)
-        data = json.loads(websocket.receive_json())
+        data = websocket.receive_json()
         assert data == {'messageType': MessageType.ERROR_INFO,
                         'message': {'reason': "Ошибка в формате сообщения: 'Операция UPDATE не поддерживается сервером'"}}
 
@@ -50,7 +49,7 @@ def test_place_order_event_incorrect_price():
     with client.websocket_connect('/ws/') as websocket:
         message = {'messageType': MessageType.PLACE_ORDER, 'message': {'instrument': 'EUR/USD', 'side': 'SELL', 'price': '', 'amount': 1}}
         websocket.send_json(message)
-        data = json.loads(websocket.receive_json())
+        data = websocket.receive_json()
         assert data == {'messageType': MessageType.ERROR_INFO,
                         'message': {'reason': "Ошибка в формате сообщения: Поля price и amount должны быть численными"}}
 
@@ -60,5 +59,5 @@ def test_place_order_event_is_ok():
     with client.websocket_connect('/ws/') as websocket:
         message = {'messageType': MessageType.PLACE_ORDER, 'message': {'instrument': 'EUR/USD', 'side': 'SELL', 'price': 1, 'amount': 1}}
         websocket.send_json(message)
-        data = json.loads(websocket.receive_json())
+        data = websocket.receive_json()
         assert data['messageType'] == MessageType.EXECUTION_REPORT
